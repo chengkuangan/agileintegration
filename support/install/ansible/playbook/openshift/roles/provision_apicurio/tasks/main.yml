@@ -1,0 +1,54 @@
+---
+- name: Create Apicurio app
+  shell: "oc new-app -f {{ apicurio_template_url }} \
+  -p UI_ROUTE=apicurio-studio.{{ ocp_apps_domain }} -p API_ROUTE=apicurio-studio-api.{{ ocp_apps_domain }} \
+  -p WS_ROUTE=apicurio-studio-ws.{{ ocp_apps_domain }} -p AUTH_ROUTE=sso-{{sso_project}}.{{ocp_apps_domain}} {{ apicurio_template_params }} -n {{ apicurio_project }}"
+  register: apicurio_create
+  failed_when: apicurio_create.stderr != '' and 'already exists' not in apicurio_create.stderr
+
+- name: Get SSO token
+  shell: "curl --insecure -X POST 'https://sso-{{sso_project}}.{{ocp_apps_domain}}/auth/realms/master/protocol/openid-connect/token' \
+  -H 'Content-Type: application/x-www-form-urlencoded' -d 'username={{ eval_rhsso_admin_username | default('keyadmin') }}' -d 'password={{ eval_rhsso_admin_password | default('keypassword') }}' -d 'grant_type=password' -d 'client_id=admin-cli'"
+  register: token_text
+
+- set_fact: TKN={{ (token_text.stdout | from_json).access_token }}
+
+- debug: var=TKN
+
+- name: Get Apicurio realm
+  uri:
+    url: "{{apicurio_realm_url}}"
+    return_content: yes
+  register: apicurio_realm
+
+- debug: var=apicurio_realm.content
+
+- set_fact: realm={{ apicurio_realm.content | regex_replace('APICURIO_UI_URL', 'http://apicurio-studio.' + ocp_apps_domain) }}
+
+- debug: var=realm
+
+- name: Create Apicurio Realm
+  uri: 
+    url: 'https://sso-{{sso_project}}.{{ocp_apps_domain}}/auth/admin/realms'
+    method: POST
+    body: "{{ realm }}"
+    body_format: json
+    headers:
+      Content-Type: "application/json"
+      Authorization: "Bearer {{ TKN }}"
+    return_content: yes
+    validate_certs: no
+    status_code: [201, 409]
+  
+- name: Create Apicurio users
+  uri: 
+    url: 'https://sso-{{sso_project}}.{{ocp_apps_domain}}/auth/admin/realms/{{apicurio_project}}/users'
+    method: POST
+    headers:
+      Content-Type: "application/json"
+      Authorization: "Bearer {{ TKN }}"
+    body: "{\"username\":\"{{ item }}\",\"enabled\":true,\"firstName\":\"{{ item }}\",\"credentials\":[{\"type\":\"password\",\"value\":\"openshift\",\"temporary\":false}]}"
+    body_format: json
+    validate_certs: no
+    status_code: [201, 409]
+  with_sequence: start=1 end={{ apicurio_user_no }} format={{apicurio_username_prefix}}%d

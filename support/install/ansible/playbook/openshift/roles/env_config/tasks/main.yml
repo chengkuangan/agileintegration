@@ -1,13 +1,19 @@
 - set_fact:
-    rhsso_namespace: "sso"
+    rhsso_namespace: "{{sso_namespace}}"
 - set_fact:
     rhsso_namespace_display_name: "Red Hat SSO" 
 - set_fact:
     rhsso_template: sso72-postgresql-persistent
 - set_fact:
-    rhsso_admin: admin
+    rhsso_admin: "{{rhsso_admin}}"
 - set_fact:
-    rhsso_admin_password: password
+    rhsso_admin_password: "{{rhsso_admin_password}}"
+- set_fact:
+    apicurio_namespace: "{{apicurio_namespace}}"
+- set_fact:
+    apicurio_username_prefix: "{{apicurio_username_prefix}}"
+- set_fact:
+    apicurio_user_no: {{apicurio_username_prefix}}
 - name: Retrieve cluster route subdomain
   slurp:
     src: "{{ eval_openshift_master_config_path }}"
@@ -23,3 +29,6 @@
     rhsso_template: "{{rhsso_template}}"
     rhsso_admin: "{{rhsso_admin}}"
     rhsso_admin_password: "{{rhsso_admin_password}}"
+    apicurio_namespace: "{{apicurio_namespace}}"
+    apicurio_user_no: {{apicurio_user_no}}
+    apicurio_username_prefix: "{{apicurio_username_prefix}}"

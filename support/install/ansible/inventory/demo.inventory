@@ -9,3 +9,9 @@ ocp.demo.com
 
 [master:vars]
 eval_openshift_master_config_path=/etc/origin/master/master-config.yaml
+sso_namespace=sso
+apicurio_namespace=apicurio
+rhsso_admin=admin
+rhsso_admin_password=password
+apicurio_username_prefix=apicurio
+apicurio_user_no=5

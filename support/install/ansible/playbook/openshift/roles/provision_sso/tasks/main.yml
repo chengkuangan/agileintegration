@@ -17,3 +17,14 @@
   shell: "oc expose svc http -name=http --hostname='{{sso_project}}.{{ocp_apps_domain}}' -n {{ sso_project }}"
   register: expose_service
   failed_when: expose_service.stderr != '' and 'already exists' not in expose_service.stderr
+- name: Wait until RH SSO API is available 
+  uri: 
+    url: https://sso-{{sso_project}}.{{ocp_apps_domain}}
+    method: HEAD
+    follow_redirects: safe
+    validate_certs: no
+  register: wait_sso_result
+  until: wait_sso_result is succeeded
+  ignore_errors: yes
+  retries: 15
+  delay: 60
