@@ -1,0 +1,25 @@
+- set_fact:
+    rhsso_namespace: "sso"
+- set_fact:
+    rhsso_namespace_display_name: "Red Hat SSO" 
+- set_fact:
+    rhsso_template: sso72-postgresql-persistent
+- set_fact:
+    rhsso_admin: admin
+- set_fact:
+    rhsso_admin_password: password
+- name: Retrieve cluster route subdomain
+  slurp:
+    src: "{{ eval_openshift_master_config_path }}"
+  register: openshift_master_config
+  become: yes
+- set_fact:
+    oc_apps_domain: "{{ (openshift_master_config['content'] | b64decode | from_yaml)['routingConfig']['subdomain'] }}"
+- add_host:
+    name: SHARED_VARS
+    oc_apps_domain: "{{ oc_apps_domain }}"
+    rhsso_namespace: "{{rhsso_namespace}}"
+    rhsso_namespace_display_name: "{{rhsso_namespace_display_name}}"
+    rhsso_template: "{{rhsso_template}}"
+    rhsso_admin: "{{rhsso_admin}}"
+    rhsso_admin_password: "{{rhsso_admin_password}}"

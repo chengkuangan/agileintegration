@@ -1,0 +1,21 @@
+---
+- name: "Set demo environment settings"
+  hosts: master
+  gather_facts: no  
+  tasks:
+  - include_role:
+      name: env_config
+
+- name: "Install SSO"
+  hosts: master
+  tasks:
+    - include_role:
+        name: provision_sso
+      vars:
+        ocp_apps_domain: "{{ hostvars['SHARED_VARS']['oc_apps_domain'] }}"
+        sso_project: "{{ hostvars['SHARED_VARS']['rhsso_namespace'] }}"
+        sso_project_display_name: "{{hostvars['SHARED_VARS']['rhsso_namespace_display_name']}}"
+        sso_template: "{{hostvars['SHARED_VARS']['rhsso_template']}}"
+        sso_admin: "{{hostvars['SHARED_VARS']['rhsso_admin']}}"
+        sso_admin_password: "{{hostvars['SHARED_VARS']['rhsso_admin_password']}}"
+      tags: sso

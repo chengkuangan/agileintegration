@@ -1,0 +1,11 @@
+[OSEv3:children]
+master
+
+[OSEv3:vars]
+# ansible_user=ec2-user
+
+[master]
+ocp.demo.com
+
+[master:vars]
+eval_openshift_master_config_path=/etc/origin/master/master-config.yaml
