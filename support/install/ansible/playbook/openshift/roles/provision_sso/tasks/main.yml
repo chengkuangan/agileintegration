@@ -1,9 +1,26 @@
 ---
+- name: Make sure we go back to default project
+  shell: "oc project default"
+
+- name: Check if image streams are available
+  shell: "oc describe is redhat-sso72-openshift -n openshift"
+  register: imagestream_exists
+  when: configure_only == 'false'
+  ignore_errors: true
+
+- name: Create image streams for RH SSO
+  shell: "oc create -f https://raw.githubusercontent.com/jboss-openshift/application-templates/{{ sso_version }}/sso/sso72-image-stream.json -n openshift"
+  when: configure_only == 'false' and imagestream_exists.failed
+
 - name: Create service account for clustering
   shell: "oc create sa sso-service-account -n {{ sso_project }}"
 
 - name: Add cluster view policy to sa for clustering
   shell: "oc policy add-role-to-user view system:serviceaccount:{{ sso_project }}:sso-service-account -n {{ sso_project }}"
+
+- name: Create secrets for RH SSO
+  shell: "oc create -f {{sso_app_secret_template_url}} -n {{ sso_project }}"
+  when: configure_only == 'false'
 
 - name: Create RH SSO app
   shell: "oc new-app -f {{sso_template_url}} -p SSO_ADMIN_USERNAME={{sso_admin}} -p SSO_ADMIN_PASSWORD={{sso_admin_password}} -n {{sso_project}}"
@@ -19,7 +36,7 @@
   failed_when: expose_service.stderr != '' and 'already exists' not in expose_service.stderr
 - name: Wait until RH SSO API is available 
   uri: 
-    url: https://sso-{{sso_project}}.{{ocp_apps_domain}}
+    url: http://sso-{{sso_project}}.{{ocp_apps_domain}}
     method: HEAD
     follow_redirects: safe
     validate_certs: no
