@@ -6,7 +6,7 @@
   shell: "oc policy add-role-to-user view system:serviceaccount:{{ sso_project }}:sso-service-account -n {{ sso_project }}"
 
 - name: Create RH SSO app
-  shell: "oc new-app --template={{ sso_template }} -p SSO_ADMIN_USERNAME={{sso_admin}} -p SSO_ADMIN_PASSWORD={{sso_admin_password}} -n {{sso_project}}"
+  shell: "oc new-app -f {{sso_template_url}} -p SSO_ADMIN_USERNAME={{sso_admin}} -p SSO_ADMIN_PASSWORD={{sso_admin_password}} -n {{sso_project}}"
 
 - name: Create http service
   shell: "oc expose dc sso --name=http --port=8080 --protocol='TCP' -n {{ sso_project }}"

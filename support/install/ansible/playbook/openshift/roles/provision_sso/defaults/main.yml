@@ -1,0 +1,2 @@
+---
+sso_template_url: https://raw.githubusercontent.com/jboss-container-images/redhat-sso-7-openshift-image/sso72-dev/templates/sso72-postgresql-persistent.json

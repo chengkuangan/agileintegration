@@ -13,7 +13,7 @@
 - set_fact:
     apicurio_username_prefix: "{{apicurio_username_prefix}}"
 - set_fact:
-    apicurio_user_no: {{apicurio_username_prefix}}
+    apicurio_user_no: "{{apicurio_username_prefix}}"
 - name: Retrieve cluster route subdomain
   slurp:
     src: "{{ eval_openshift_master_config_path }}"
@@ -30,5 +30,5 @@
     rhsso_admin: "{{rhsso_admin}}"
     rhsso_admin_password: "{{rhsso_admin_password}}"
     apicurio_namespace: "{{apicurio_namespace}}"
-    apicurio_user_no: {{apicurio_user_no}}
+    apicurio_user_no: "{{apicurio_user_no}}"
     apicurio_username_prefix: "{{apicurio_username_prefix}}"
