@@ -7,8 +7,7 @@
 
 - name: Create secrets for RH SSO
   shell: "oc create -f {{sso_app_secret_template_url}} -n {{ sso_project }}"
-  when: configure_only == 'false'
-
+  
 - name: Create RH SSO app
   shell: "oc new-app -f {{sso_template_url}} -p SSO_ADMIN_USERNAME={{sso_admin}} -p SSO_ADMIN_PASSWORD={{sso_admin_password}} -n {{sso_project}}"
 
