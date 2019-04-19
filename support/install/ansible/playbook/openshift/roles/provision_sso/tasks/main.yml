@@ -1,28 +1,28 @@
 ---
 - name: Create service account for clustering
-  shell: "oc create sa sso-service-account -n {{ sso_project }}"
+  shell: "oc create sa sso-service-account -n {{ sso_namespace }}"
 
 - name: Add cluster view policy to sa for clustering
-  shell: "oc policy add-role-to-user view system:serviceaccount:{{ sso_project }}:sso-service-account -n {{ sso_project }}"
+  shell: "oc policy add-role-to-user view system:serviceaccount:{{ sso_namespace }}:sso-service-account -n {{ sso_namespace }}"
 
 - name: Create secrets for RH SSO
-  shell: "oc create -f {{sso_app_secret_template_url}} -n {{ sso_project }}"
+  shell: "oc create -f {{sso_app_secret_template_url}} -n {{ sso_namespace }}"
   
 - name: Create RH SSO app
-  shell: "oc new-app -f {{sso_template_url}} -p SSO_ADMIN_USERNAME={{sso_admin}} -p SSO_ADMIN_PASSWORD={{sso_admin_password}} -n {{sso_project}}"
+  shell: "oc new-app -f {{sso_template_url}} -p SSO_ADMIN_USERNAME={{rhsso_admin_username}} -p SSO_ADMIN_PASSWORD={{rhsso_admin_password}} -n {{sso_namespace}}"
 
 - name: Create http service
-  shell: "oc expose dc sso --name=http --port=8080 --protocol='TCP' -n {{ sso_project }}"
+  shell: "oc expose dc sso --name=http --port=8080 --protocol='TCP' -n {{ sso_namespace }}"
   register: expose_sso
   failed_when: expose_sso.stderr != '' and 'already exists' not in expose_sso.stderr
 
 - name: Expose http service
-  shell: "oc expose svc http -name=http --hostname='{{sso_project}}.{{ocp_apps_domain}}' -n {{ sso_project }}"
+  shell: "oc expose svc http -name=http --hostname='{{sso_namespace}}.{{ocp_apps_domain}}' -n {{ sso_namespace }}"
   register: expose_service
   failed_when: expose_service.stderr != '' and 'already exists' not in expose_service.stderr
 - name: Wait until RH SSO API is available 
   uri: 
-    url: http://sso-{{sso_project}}.{{ocp_apps_domain}}
+    url: http://{{sso_app_name}}-{{sso_namespace}}.{{ocp_apps_domain}}
     method: HEAD
     follow_redirects: safe
     validate_certs: no

@@ -1,0 +1,4 @@
+---
+microcks_realm_url: https://raw.githubusercontent.com/chengkuangan/agileintegration/master/support/templates/microcks-realm.json
+microcks_template_url: https://raw.githubusercontent.com/chengkuangan/agileintegration/master/support/templates/microcks-template.yml
+microcks_template_parameters: " --param=APP_NAME={{microcks_app_name}} --param=KEYCLOAK_ROUTE_HOSTNAME=http://{{sso_app_name}}-{{sso_namespace}}.{{ocp_apps_domain}}/auth --param=APP_ROUTE_HOSTNAME={{microcks_namespace}}.{{ocp_apps_domain}} "

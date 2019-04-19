@@ -8,10 +8,24 @@ master
 ocp.demo.com
 
 [master:vars]
-eval_openshift_master_config_path=/etc/origin/master/master-config.yaml
+openshift_master_config_path=/etc/origin/master/master-config.yaml
+sso_install=false
 sso_namespace=sso
-apicurio_namespace=apicurio
-rhsso_admin=admin
+sso_namespace_display_name=RH SSO
+sso_app_name=sso
+rhsso_admin_username=admin
 rhsso_admin_password=password
+apicurio_install=false
+apicurio_namespace=apicurio
+apicurio_namespace_display_name=APICurio Studio
+apicurio_app_name=apicurio-studio
 apicurio_username_prefix=apicurio
+apicurio_user_password=openshift
 apicurio_user_no=5
+microcks_install=true
+microcks_namespace=microcks
+microcks_namespace_display_name=Microcks
+microcks_username_prefix=microcks
+microcks_user_password=openshift
+microcks_user_no=5
+microcks_app_name=microcks

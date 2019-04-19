@@ -1,4 +1,4 @@
 ---
 apicurio_template_url: https://raw.githubusercontent.com/chengkuangan/agileintegration/master/support/templates/apicurio-template.yml
 apicurio_realm_url: https://raw.githubusercontent.com/chengkuangan/agileintegration/master/support/templates/apicurio-realm.json
-apicurio_template_params: -p API_STUDIO_API_IMAGE_TAG=0.2.17.Final -p API_STUDIO_WS_IMAGE_TAG=0.2.17.Final -p API_STUDIO_UI_IMAGE_TAG=0.2.17.Final
+apicurio_template_parameters: " --param=UI_ROUTE={{apicurio_app_name}}.{{ocp_apps_domain}} --param=API_ROUTE={{apicurio_app_name}}-api.{{ocp_apps_domain}} --param=WS_ROUTE={{apicurio_app_name}}-ws.{{ocp_apps_domain}} --param=AUTH_ROUTE=http://{{sso_app_name}}-{{sso_namespace}}.{{ocp_apps_domain}}/auth --param=KC_REALM={{apicurio_namespace}}"

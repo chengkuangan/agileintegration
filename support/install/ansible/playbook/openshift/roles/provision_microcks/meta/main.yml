@@ -1,0 +1,2 @@
+dependencies:
+  - { role: project,  project: '{{ microcks_namespace }}', display_name: "{{microcks_namespace_display_name}}" }

@@ -1,2 +1,2 @@
 dependencies:
-  - { role: project, project: '{{ sso_project }}', display_name: "{{ sso_project_display_name }}" }
+  - { role: project, project: '{{ sso_namespace }}', display_name: "{{ sso_namespace_display_name }}" }

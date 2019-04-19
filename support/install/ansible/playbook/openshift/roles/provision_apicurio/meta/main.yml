@@ -1,2 +1,2 @@
 dependencies:
-  - { role: project,  project: '{{ apicurio_project }}', display_name: "Apicurio Studio" }
+  - { role: project,  project: '{{ apicurio_namespace }}', display_name: "{{apicurio_namespace_display_name}}" }

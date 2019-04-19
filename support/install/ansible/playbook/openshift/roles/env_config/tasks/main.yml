@@ -1,34 +1,33 @@
-- set_fact:
-    rhsso_namespace: "{{sso_namespace}}"
-- set_fact:
-    rhsso_namespace_display_name: "Red Hat SSO" 
-- set_fact:
-    rhsso_template: sso72-postgresql-persistent
-- set_fact:
-    rhsso_admin: "{{rhsso_admin}}"
-- set_fact:
-    rhsso_admin_password: "{{rhsso_admin_password}}"
-- set_fact:
-    apicurio_namespace: "{{apicurio_namespace}}"
-- set_fact:
-    apicurio_username_prefix: "{{apicurio_username_prefix}}"
-- set_fact:
-    apicurio_user_no: "{{apicurio_username_prefix}}"
+# - set_fact:
+#     rhsso_namespace: "{{sso_namespace}}"
+# - set_fact:
+#     rhsso_namespace_display_name: "Red Hat SSO" 
+# - set_fact:
+#     rhsso_template: sso72-postgresql-persistent
+# - set_fact:
+#     rhsso_admin: "{{rhsso_admin}}"
+# - set_fact:
+#     rhsso_admin_password: "{{rhsso_admin_password}}"
+# - set_fact:
+#     apicurio_namespace: "{{apicurio_namespace}}"
+# - set_fact:
+#     apicurio_username_prefix: "{{apicurio_username_prefix}}"
+# - set_fact:
+#    apicurio_user_no: "{{apicurio_username_prefix}}"
 - name: Retrieve cluster route subdomain
   slurp:
-    src: "{{ eval_openshift_master_config_path }}"
+    src: "{{ openshift_master_config_path }}"
   register: openshift_master_config
   become: yes
 - set_fact:
-    oc_apps_domain: "{{ (openshift_master_config['content'] | b64decode | from_yaml)['routingConfig']['subdomain'] }}"
-- add_host:
-    name: SHARED_VARS
-    oc_apps_domain: "{{ oc_apps_domain }}"
-    rhsso_namespace: "{{rhsso_namespace}}"
-    rhsso_namespace_display_name: "{{rhsso_namespace_display_name}}"
-    rhsso_template: "{{rhsso_template}}"
-    rhsso_admin: "{{rhsso_admin}}"
-    rhsso_admin_password: "{{rhsso_admin_password}}"
-    apicurio_namespace: "{{apicurio_namespace}}"
-    apicurio_user_no: "{{apicurio_user_no}}"
-    apicurio_username_prefix: "{{apicurio_username_prefix}}"
+    ocp_apps_domain: "{{ (openshift_master_config['content'] | b64decode | from_yaml)['routingConfig']['subdomain'] }}"
+#- add_host:
+#    name: SHARED_VARS
+#    oc_apps_domain: "{{ ocp_apps_domain }}"
+#    rhsso_namespace: "{{rhsso_namespace}}"
+#    rhsso_namespace_display_name: "{{rhsso_namespace_display_name}}"
+#    rhsso_template: "{{rhsso_template}}"
+#    rhsso_admin: "{{rhsso_admin}}"
+#    rhsso_admin_password: "{{rhsso_admin_password}}"
+#    apicurio_namespace: "{{apicurio_namespace}}"
+#    apicurio_username_prefix: "{{apicurio_username_prefix}}"
