@@ -297,7 +297,7 @@ objects:
             protocol: TCP
           env:
              - name: APICURIO_KC_AUTH_URL
-               value: http://${AUTH_ROUTE}/auth
+               value: ${AUTH_ROUTE}
              - name: APICURIO_KC_REALM
                value: ${KC_REALM}
              - name: APICURIO_DB_DRIVER_NAME
@@ -501,7 +501,7 @@ objects:
             protocol: TCP
           env:
              - name: APICURIO_KC_AUTH_URL
-               value: http://${AUTH_ROUTE}/auth
+               value: ${AUTH_ROUTE}
              - name: APICURIO_KC_REALM
                value: ${KC_REALM}
              - name: APICURIO_UI_HUB_API_URL
@@ -622,7 +622,7 @@ parameters:
 - name: AUTH_ROUTE
   displayName: Authentication Route Name
   description: The route name to use for Keycloak Authentication.
-  value: apicurio-studio-auth.example.com
+  value: http://apicurio-studio-auth.example.com/auth
   required: true
 - name: GENERATED_DB_USER
   displayName: PostgreSQL Connection Username
