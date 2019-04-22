@@ -1,0 +1,47 @@
+---
+
+- name: Get SSO token
+  shell: "curl --insecure -X POST 'http://{{sso_app_name}}-{{sso_namespace}}.{{ocp_apps_domain}}/auth/realms/microcks/protocol/openid-connect/token' \
+  -H 'Content-Type: application/x-www-form-urlencoded' -d 'username=admin' -d 'password=openshift' -d 'grant_type=password' -d 'client_id=admin-cli'"
+  register: token_text
+
+- set_fact: TKN={{ (token_text.stdout | from_json).access_token }}
+
+# - debug: var=TKN
+
+#- name: Get microcks realm clients
+#  shell: "curl --insecure -X GET 'http://sso-sso.apps.ocp.demo.com/auth/admin/realms/microcks/clients' -H 'Content-Type: application/json' -H 'Authorization : \"Bearer {{ TKN }}\"' "
+#  register: clients
+
+#- set_fact: CLIENTS={{ (clients.stdout | from_json) }}
+#- debug: var=CLIENTS
+
+- name: Get microcks clients
+  uri: 
+    url: 'http://sso-sso.apps.ocp.demo.com/auth/admin/realms/microcks/clients/'
+    method: GET
+    headers:
+      Content-Type: "application/json"
+      Authorization: "Bearer {{ TKN }}"
+    return_content: yes
+    validate_certs: no
+    status_code: [200]
+  register: clients
+
+- set_fact: CLIENT_ID={{ (clients | json_query("json[?clientId=='microcks-serviceaccount']") )[0].id }}
+- debug: var=CLIENT_ID
+
+- name: Get microcks-serviceaccount client-secret
+  uri: 
+    url: 'http://{{sso_app_name}}-{{sso_namespace}}.{{ocp_apps_domain}}/auth/admin/realms/microcks/clients/{{CLIENT_ID}}/client-secret'
+    method: GET
+    headers:
+      Content-Type: "application/json"
+      Authorization: "Bearer {{ TKN }}"
+    return_content: yes
+    validate_certs: no
+    status_code: [200]
+  register: client_secret
+
+- set_fact: CLIENT_SECRET={{ client_secret.json.value }}
+- debug: var=CLIENT_SECRET

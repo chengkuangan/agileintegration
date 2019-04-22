@@ -306,6 +306,12 @@ objects:
                value: jdbc:postgresql://postgresql:5432/${DB_NAME}
              - name: APICURIO_DB_TYPE
                value: postgresql9
+             - name: APICURIO_MICROCKS_API_URL
+               value: ${APICURIO_MICROCKS_API_URL}
+             - name: APICURIO_MICROCKS_CLIENT_ID
+               value: ${APICURIO_MICROCKS_CLIENT_ID}
+             - name: APICURIO_MICROCKS_CLIENT_SECRET
+               value: ${APICURIO_MICROCKS_CLIENT_SECRET}      
              - name: APICURIO_DB_USER_NAME
                valueFrom:
                  secretKeyRef:
@@ -514,6 +520,8 @@ objects:
                value: ${UI_JVM_MIN}
              - name: APICURIO_MAX_HEAP
                value: ${UI_JVM_MAX}
+             - name: APICURIO_UI_FEATURE_MICROCKS
+               value: ${APICURIO_UI_FEATURE_MICROCKS}  
           resources:
             limits:
               cpu: ${UI_CPU_LIMIT}
@@ -768,3 +776,20 @@ parameters:
   description: AUTH Pods CPU Request
   value: 100m
   required: true
+- name: APICURIO_MICROCKS_API_URL
+  displayName: Microcks API URL
+  description: Microcks API URL
+  value: http://microcks.example.com/api
+  required: false
+- name: APICURIO_MICROCKS_CLIENT_ID
+  displayName: SSO client Id
+  description: Microcks SSO client Id
+  required: false
+- name: APICURIO_MICROCKS_CLIENT_SECRET
+  displayName: SSO Client Secret
+  description: Microcks SSO Client Secret
+  required: false     
+- name: APICURIO_UI_FEATURE_MICROCKS
+  displayName: Microcks UI Feature
+  description: Enable Microcks UI Feature on APICurio
+  required: false  

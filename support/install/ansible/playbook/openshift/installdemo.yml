@@ -6,6 +6,15 @@
   - include_role:
       name: env_config
 
+- name: "Run Test"
+  hosts: master
+  gather_facts: no
+  tasks:
+    - include_role:
+        name: test_scripts
+      when: run_test_task
+      tags: test_task 
+  
 - name: "Install SSO"
   hosts: master
   gather_facts: no
@@ -14,6 +23,15 @@
         name: provision_sso
       when: sso_install
       tags: sso 
+
+- name: "Install Microcks"
+  hosts: master
+  gather_facts: no
+  tasks:
+    - include_role:
+        name: provision_microcks
+      when: microcks_install
+      tags: microcks
 
 - name: "Install APICurio"
   hosts: master
@@ -24,11 +42,4 @@
       when: apicurio_install
       tags: apicurio
 
-- name: "Install Microcks"
-  hosts: master
-  gather_facts: no
-  tasks:
-    - include_role:
-        name: provision_microcks
-      when: microcks_install
-      tags: microcks  
+  

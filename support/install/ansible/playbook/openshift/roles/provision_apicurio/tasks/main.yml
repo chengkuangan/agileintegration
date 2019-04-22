@@ -47,6 +47,36 @@
     status_code: [201, 409]
   with_sequence: start=1 end={{ apicurio_user_no }} format="{{apicurio_username_prefix}}%d"
 
+- name: Get microcks-serviceaccount client-id
+  uri: 
+    url: 'http://{{sso_app_name}}-{{sso_namespace}}.{{ocp_apps_domain}}/auth/admin/realms/{{microcks_namespace}}/clients/'
+    method: GET
+    headers:
+      Content-Type: "application/json"
+      Authorization: "Bearer {{ TKN }}"
+    return_content: yes
+    validate_certs: no
+    status_code: [200]
+  register: microcks_serviceaccount
+
+- set_fact: MICROCKS_CLIENT_ID={{ (microcks_serviceaccount | json_query("json[?clientId=='microcks-serviceaccount']") )[0].id }}
+- debug: var=MICROCKS_CLIENT_ID
+
+- name: Get microcks-serviceaccount client-secret
+  uri: 
+    url: 'http://{{sso_app_name}}-{{sso_namespace}}.{{ocp_apps_domain}}/auth/admin/realms/{{microcks_namespace}}/clients/{{MICROCKS_CLIENT_ID}}/client-secret'
+    method: GET
+    headers:
+      Content-Type: "application/json"
+      Authorization: "Bearer {{ TKN }}"
+    return_content: yes
+    validate_certs: no
+    status_code: [200]
+  register: microcks_client_secret
+
+- set_fact: MICROCKS_CLIENT_SECRET={{ microcks_client_secret.json.value }}
+- debug: var=MICROCKS_CLIENT_SECRET
+
 - name: Create Apicurio app
   shell: "oc new-app -f {{ apicurio_template_url }} {{apicurio_template_parameters}} -n {{ apicurio_namespace }}"
   register: apicurio_create
